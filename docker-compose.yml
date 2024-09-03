@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: sesi-14
+    restart: always
+    environment:
+      - JWT_SECRET=rahasia
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=todos
+      - DB_USER=postgres
+      - DB_PASS=postgres
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app # host:container
+      - /app/node_modules
+    depends_on:
+      - db
+    command: npx sequelize db:create && npx sequelize db:migrate
+  
+  db:
+    image: postgres:16
+    restart: always
+    ports:
+      - 54321:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - /Users/udibagas/db:/var/lib/postgresql/data
